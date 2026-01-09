@@ -1,0 +1,145 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap');
+
+:root {
+  --primary-bg: #FFFFFF;
+  --primary-text: #333333;
+  --accent-purple: #E0B0FF;
+  --accent-purple-dark: #9370DB;
+  --accent-blue: #ADD8E6;
+  --accent-blue-dark: #87CEEB;
+  --input-bg: #ffffff;
+  --shadow-soft: 0 4px 15px rgba(0, 0, 0, 0.05);
+  --radius-round: 25px;
+  --radius-soft: 12px;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  color: var(--primary-text);
+  min-height: 100vh;
+}
+
+.auth-body {
+  background-image: url('./assets/images/background.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  max-width: 400px; 
+  width: 90%;
+  margin: auto;
+  padding: 2.5rem 2rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 30px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.btn {
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: var(--radius-round);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+  margin-top: 1rem;
+  box-shadow: var(--shadow-soft);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(147, 112, 219, 0.3);
+}
+
+.input-field {
+  width: 100%;
+  padding: 0.8rem 1.2rem;
+  margin: 0.5rem 0;
+  border: 1px solid var(--accent-purple-dark);
+  background-color: var(--input-bg);
+  border-radius: var(--radius-round);
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.input-field:focus {
+  outline: none;
+  background-color: white;
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 0 3px rgba(224, 176, 255, 0.2);
+}
+
+a {
+  color: var(--accent-purple-dark);
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  display: inline-block;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.jeepney-image {
+  max-width: 212px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.title-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.error-message {
+  color: #d32f2f;
+  background-color: #fdecea;
+  padding: 0.8rem;
+  border-radius: var(--radius-soft);
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #ffcdd2;
+}
+
+h1.app-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2.0rem;
+  font-weight: 800;
+  margin: 0;
+  background: linear-gradient(
+    to right,
+    var(--accent-purple-dark),
+    var(--accent-blue-dark)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
