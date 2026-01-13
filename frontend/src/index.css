@@ -143,3 +143,186 @@ h1.app-title {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+.navbar {
+  background-color: #B4B4D6;
+  height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1.5rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar-left a {
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-logo {
+  height: 37px;
+  width: auto;
+}
+
+.navbar-right {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.icon-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.home-page {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  width: 100%;
+  position: relative; /* Essential for overlaying the panel */
+}
+
+.map-wrapper {
+  width: 100%;
+  height: calc(100vh - 60px); /* Subtracting navbar height */
+  z-index: 1;
+}
+
+/* Location Input Panel Styles */
+.panel-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align GPS button to the left */
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.gps-fab {
+  background-color: #B4B4D6;
+  color: white;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 20px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.gps-fab:hover {
+  background-color: var(--accent-purple-dark);
+  transform: scale(1.1);
+}
+
+.location-panel {
+  width: 100%;
+  background-color: #B4B4D6;
+  padding: 1.5rem;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* Desktop / Wide Screen Styles */
+@media (min-width: 768px) {
+  .panel-container {
+    bottom: 20px;
+    left: 20px;
+    width: 350px;
+  }
+
+  .location-panel {
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+
+  .gps-fab {
+    margin-left: 0; /* Align with the edge of the panel on desktop */
+  }
+}
+
+.panel-handle {
+  width: 40px;
+  height: 4px;
+  background-color: white;
+  border-radius: 2px;
+  margin-bottom: 1rem;
+  opacity: 0.8;
+}
+
+.input-group {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.location-input {
+  width: 100%;
+  padding: 1rem 3rem 1rem 1rem; 
+  border: none;
+  border-radius: 15px;
+  font-size: 1rem;
+  color: var(--primary-text);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.location-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px white;
+}
+
+.input-icon-wrapper {
+  position: absolute;
+  right: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.input-icon-static {
+  color: #888;
+  pointer-events: none;
+}
+
+.connector {
+  margin: 0.5rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
