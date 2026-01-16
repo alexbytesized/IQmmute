@@ -121,21 +121,33 @@ def assign_driver_route(payload: DriverRouteAssign, db: Session = Depends(get_db
     if not route:
         raise HTTPException(status_code=404, detail="Route not found")
 
-    existing = (
-        db.query(DriverRoute)
-        .filter(
-            DriverRoute.driver_id == payload.driver_id,
-            DriverRoute.route_id == route.id
-        )
-        .first()
-    )
-    if existing:
-        return {"message": "Already assigned", "driver_id": payload.driver_id, "route_code": payload.route_code}
+    # For this system, let's assume one driver can only have one active route.
+    # We clear previous assignments first.
+    db.query(DriverRoute).filter(DriverRoute.driver_id == payload.driver_id).delete()
 
     dr = DriverRoute(driver_id=payload.driver_id, route_id=route.id)
     db.add(dr)
     db.commit()
     return {"message": "Assigned", "driver_id": payload.driver_id, "route_code": payload.route_code}
+
+
+@app.get("/driver-routes/{driver_id}")
+def get_driver_assigned_route(driver_id: int, db: Session = Depends(get_db)):
+    assignment = (
+        db.query(DriverRoute)
+        .filter(DriverRoute.driver_id == driver_id)
+        .order_by(desc(DriverRoute.assigned_at))
+        .first()
+    )
+    if not assignment:
+        return {"assigned": False}
+
+    route = db.query(Route).filter(Route.id == assignment.route_id).first()
+    return {
+        "assigned": True,
+        "route_code": route.route_code,
+        "route_name": route.route_name
+    }
 
 
 @app.post("/driver-status", response_model=DriverStatusOut, status_code=201)
