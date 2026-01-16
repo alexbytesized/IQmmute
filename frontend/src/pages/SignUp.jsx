@@ -71,19 +71,19 @@ const SignUp = () => {
 
     try {
       // 4. Send data to Backend
-      const response = await fetch('http://localhost:5000/api/signup', {
+      const response = await fetch('http://localhost:8000/drivers', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          firstName: formData.firstName,
-          lastName: formData.lastName,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
           email: formData.email,
-          licenseNumber: formData.licenseNumber,
-          phoneNumber: formData.phoneNumber,
-          plateNumber: formData.plateNumber,
-          operatorName: formData.operatorName,
+          license_no: formData.licenseNumber,
+          phone: formData.phoneNumber,
+          plate_no: formData.plateNumber,
+          operator_name: formData.operatorName,
           password: formData.password
         }),
       });
@@ -92,9 +92,9 @@ const SignUp = () => {
 
       if (response.ok) {
         alert('Account created successfully!');
-        navigate('/');
+        navigate('/signin');
       } else {
-        setError(data.message || 'Failed to create account.');
+        setError(data.detail || 'Failed to create account.');
       }
     } catch (err) {
       console.error("Signup Error:", err);

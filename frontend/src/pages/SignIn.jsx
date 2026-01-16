@@ -35,7 +35,7 @@ const SignIn = () => {
 
     try {
       // 4. Send data to Backend
-      const response = await fetch('http://localhost:5000/api/login', {
+      const response = await fetch('http://localhost:8000/auth/driver/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -44,11 +44,18 @@ const SignIn = () => {
       });
 
       if (response.ok) {
-        console.log('Login successful');
-        navigate('/home');
+        const data = await response.json();
+        console.log('Login successful', data);
+        
+        // Store user info
+        localStorage.setItem('driver_id', data.driver_id);
+        localStorage.setItem('driver_name', `${data.first_name} ${data.last_name}`);
+        localStorage.setItem('driver_email', data.email);
+
+        navigate('/driver/home');
       } else {
         const data = await response.json().catch(() => ({}));
-        setError(data.message || 'Login failed. Please check your credentials.');
+        setError(data.detail || 'Login failed. Please check your credentials.');
       }
     } catch (error) {
       console.error('Error submitting form:', error);

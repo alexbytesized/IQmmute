@@ -1,11 +1,15 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/IQmmuteLogo.svg';
 
 const DriverNavbar = () => {
+  const navigate = useNavigate();
+
   const handleLogout = () => {
-    // Temporarily removed navigation for debugging.
-    console.log("User clicked Log Out.");
+    localStorage.removeItem('driver_id');
+    localStorage.removeItem('driver_name');
+    localStorage.removeItem('driver_email');
+    navigate('/signin');
   };
 
   return (

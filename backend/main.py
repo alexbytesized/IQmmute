@@ -1,8 +1,8 @@
+import bcrypt
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
-
-from passlib.context import CryptContext
 
 from database import get_db
 from models import Driver, Route, DriverRoute, DriverStatus
@@ -16,13 +16,29 @@ from schemas import (
 
 app = FastAPI(title="IQmmute API")
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Allow CORS for frontend interaction
+origins = [
+    "http://localhost:5173",  # Vite default port
+    "http://localhost:3000",  # React default port (just in case)
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
+    # bcrypt expects bytes, so we encode the password
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
+    return hashed.decode('utf-8')
 
 def verify_password(password: str, hashed: str) -> bool:
-    return pwd_context.verify(password, hashed)
+    # bcrypt.checkpw expects (password_bytes, hashed_bytes)
+    return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
 
 
 @app.get("/")

@@ -12,7 +12,8 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/driver/home" element={<DriverHome />} />
+        <Route path="/driver/home" element={<DriverHome />} 
+        />
       </Routes>
     </Router>
   );
