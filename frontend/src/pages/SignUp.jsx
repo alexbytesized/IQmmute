@@ -7,10 +7,12 @@ const SignUp = () => {
   // 1. State to hold all the user inputs
   const [formData, setFormData] = useState({
     firstName: '',
-    middleName: '',
     lastName: '',
-    phoneNumber: '',
     email: '',
+    licenseNumber: '',
+    phoneNumber: '',
+    plateNumber: '',
+    operatorName: '',
     password: '',
     confirmPassword: ''
   });
@@ -52,16 +54,12 @@ const SignUp = () => {
       setError("Last name must contain only letters.");
       return;
     }
-    if (formData.middleName && !nameRegex.test(formData.middleName)) {
-      setError("Middle name must contain only letters.");
+    if (!emailRegex.test(formData.email)) {
+      setError("Please enter a valid email address.");
       return;
     }
     if (!phoneRegex.test(formData.phoneNumber)) {
       setError("Phone number must be exactly 11 digits.");
-      return;
-    }
-    if (!emailRegex.test(formData.email)) {
-      setError("Please enter a valid email address.");
       return;
     }
     if (formData.password !== formData.confirmPassword) {
@@ -80,10 +78,12 @@ const SignUp = () => {
         },
         body: JSON.stringify({
           firstName: formData.firstName,
-          middleName: formData.middleName,
           lastName: formData.lastName,
-          phoneNumber: formData.phoneNumber,
           email: formData.email,
+          licenseNumber: formData.licenseNumber,
+          phoneNumber: formData.phoneNumber,
+          plateNumber: formData.plateNumber,
+          operatorName: formData.operatorName,
           password: formData.password
         }),
       });
@@ -107,7 +107,7 @@ const SignUp = () => {
   return (
     <div className="container">
       <h1 className="app-title">Sign Up</h1>
-      <p>Create your IQmmute Driver account.</p>
+      <p>Create your IQmmute Driver Account.</p>
       
       <form style={{ width: '100%' }} onSubmit={handleSubmit}>
         {error && <div className="error-message">{error}</div>}
@@ -124,19 +124,20 @@ const SignUp = () => {
         />
         <input 
           type="text" 
-          name="middleName"
-          placeholder="Middle Name" 
-          className="input-field" 
-          value={formData.middleName}
-          onChange={handleChange}
-          disabled={isLoading}
-        />
-        <input 
-          type="text" 
           name="lastName"
           placeholder="Last Name" 
           className="input-field" 
           value={formData.lastName}
+          onChange={handleChange}
+          required
+          disabled={isLoading}
+        />
+        <input 
+          type="email" 
+          name="email"
+          placeholder="Email" 
+          className="input-field" 
+          value={formData.email}
           onChange={handleChange}
           required
           disabled={isLoading}
@@ -149,14 +150,37 @@ const SignUp = () => {
           value={formData.phoneNumber}
           onChange={handleChange}
           required
+          maxLength="11"
+          pattern="\d{11}"
+          title="Phone number must be 11 digits."
           disabled={isLoading}
         />
         <input 
-          type="email" 
-          name="email"
-          placeholder="Email" 
+          type="text" 
+          name="licenseNumber"
+          placeholder="License Number" 
           className="input-field" 
-          value={formData.email}
+          value={formData.licenseNumber}
+          onChange={handleChange}
+          required
+          disabled={isLoading}
+        />
+        <input 
+          type="text" 
+          name="plateNumber"
+          placeholder="Plate Number" 
+          className="input-field" 
+          value={formData.plateNumber}
+          onChange={handleChange}
+          required
+          disabled={isLoading}
+        />
+        <input 
+          type="text" 
+          name="operatorName"
+          placeholder="Operator Name" 
+          className="input-field" 
+          value={formData.operatorName}
           onChange={handleChange}
           required
           disabled={isLoading}

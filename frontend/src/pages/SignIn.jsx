@@ -34,7 +34,7 @@ const SignIn = () => {
     const credentials = { email, password };
 
     try {
-      // 4. Send data to Backend (Flask/Node.js)
+      // 4. Send data to Backend
       const response = await fetch('http://localhost:5000/api/login', {
         method: 'POST',
         headers: {
@@ -65,7 +65,7 @@ const SignIn = () => {
       </div>
       
       <h1 className="app-title">IQmmute</h1>
-      <p>Sign in to your Driver Account.</p>
+      <p>Sign in to your IQmmute Driver Account.</p>
       
       <form onSubmit={handleSubmit} style={{ width: '100%' }}>
         {error && <div className="error-message">{error}</div>}
