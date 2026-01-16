@@ -282,8 +282,9 @@ a.icon-btn {
 /* Desktop / Wide Screen Styles */
 @media (min-width: 768px) {
   .panel-container {
-    bottom: 20px;
+    top: 20px; /* Distance from top of the main-content */
     left: 20px;
+    bottom: auto; /* Remove the bottom constraint */
     width: 350px;
   }
 
@@ -346,4 +347,54 @@ a.icon-btn {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/* Suggestions Dropdown Styles */
+.suggestions-list {
+  position: absolute;
+  bottom: calc(100% - 10px); /* Small gap from the panel */
+  left: 1.5rem; /* Match the padding of .location-panel */
+  right: 1.5rem; /* Match the padding of .location-panel */
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1001;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+/* Adjust for desktop */
+@media (min-width: 768px) {
+  .suggestions-list {
+    bottom: auto;
+    top: calc(100% - 10px); /* Appear below the inputs */
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
+}
+
+.suggestions-list li {
+  padding: 12px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: var(--primary-text);
+  font-size: 0.95rem;
+}
+
+.suggestions-list li:last-child {
+  border-bottom: none;
+}
+
+.suggestions-list li:hover {
+  background-color: #f5f5f5;
+  color: var(--accent-purple-dark);
+}
+
+.suggestions-list li strong {
+  color: var(--accent-purple-dark);
+  font-weight: 700;
 }
