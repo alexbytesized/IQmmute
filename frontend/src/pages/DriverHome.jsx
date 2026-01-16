@@ -9,6 +9,24 @@ const DriverHome = () => {
   const [routeName, setRouteName] = useState('');
   const [allRoutes, setAllRoutes] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [routeGeometry, setRouteGeometry] = useState(null);
+
+  // Helper to fetch geometry
+  const fetchGeometry = async (code) => {
+    try {
+      const response = await fetch(`http://localhost:8000/routes/${code}/geometry`);
+      if (response.ok) {
+        const geoData = await response.json();
+        setRouteGeometry(geoData);
+      } else {
+        console.warn("No geometry found for route:", code);
+        setRouteGeometry(null);
+      }
+    } catch (error) {
+      console.error("Error fetching geometry:", error);
+      setRouteGeometry(null);
+    }
+  };
 
   // 1. Fetch all routes and current assignment
   useEffect(() => {
@@ -30,6 +48,8 @@ const DriverHome = () => {
           if (assignData.assigned) {
             setRouteId(assignData.route_code);
             setRouteName(assignData.route_name);
+            // Load geometry for pre-assigned route
+            fetchGeometry(assignData.route_code);
           }
         }
       } catch (error) {
@@ -46,6 +66,9 @@ const DriverHome = () => {
     setRouteId(route.route_code);
     setRouteName(route.route_name);
     
+    // Optimistically load geometry immediately for better UX
+    fetchGeometry(route.route_code);
+
     setIsSaving(true);
     try {
       const response = await fetch('http://localhost:8000/driver-routes', {
@@ -73,7 +96,7 @@ const DriverHome = () => {
     <div className="home-page">
       <DriverNavbar />
       <main className="main-content">
-        <MapComponent userLocation={userLocation} />
+        <MapComponent userLocation={userLocation} routeGeometry={routeGeometry} />
         <DriverRoutePanel 
           routeId={routeId}
           setRouteId={(e) => setRouteId(e.target.value)}

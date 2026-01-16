@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
 // Fix for default Leaflet marker icons not showing in React
@@ -29,7 +29,18 @@ const RecenterMap = ({ location }) => {
   return null;
 };
 
-const MapComponent = ({ userLocation }) => {
+// Helper to fit bounds to the route
+const FitRouteBounds = ({ positions }) => {
+  const map = useMap();
+  useEffect(() => {
+    if (positions && positions.length > 0) {
+      map.fitBounds(positions, { padding: [50, 50] });
+    }
+  }, [positions, map]);
+  return null;
+};
+
+const MapComponent = ({ userLocation, routeGeometry }) => {
   // Metro Manila coordinates
   const position = [14.5995, 120.9842];
   
@@ -38,6 +49,16 @@ const MapComponent = ({ userLocation }) => {
     [14.33, 120.85], // Southwest corner
     [14.78, 121.15]  // Northeast corner
   ];
+
+  // Process GeoJSON geometry into Leaflet Polyline positions [lat, lng]
+  let routePositions = [];
+  if (routeGeometry && routeGeometry.type === 'LineString') {
+    routePositions = routeGeometry.coordinates.map(coord => [coord[1], coord[0]]);
+  } else if (routeGeometry && routeGeometry.type === 'MultiLineString') {
+    // Flatten MultiLineString for simplicity, or just take the first/longest segment
+    // Here we just take all segments and join them visually (though techincally separate lines)
+     routePositions = routeGeometry.coordinates.flat().map(coord => [coord[1], coord[0]]);
+  }
 
   return (
     <div className="map-wrapper">
@@ -64,6 +85,13 @@ const MapComponent = ({ userLocation }) => {
             <Marker position={[userLocation.lat, userLocation.lng]}>
               <Popup>You are here</Popup>
             </Marker>
+          </>
+        )}
+
+        {routePositions.length > 0 && (
+          <>
+            <Polyline positions={routePositions} pathOptions={{ color: 'blue', weight: 5, opacity: 0.7 }} />
+            <FitRouteBounds positions={routePositions} />
           </>
         )}
       </MapContainer>

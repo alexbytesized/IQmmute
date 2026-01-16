@@ -6,6 +6,7 @@ from sqlalchemy import desc
 
 from database import get_db
 from models import Driver, Route, DriverRoute, DriverStatus
+from geojson_utils import find_route_geometry, load_geojson
 from schemas import (
     DriverCreate, DriverOut,
     RouteOut,
@@ -13,6 +14,9 @@ from schemas import (
     DriverStatusCreate, DriverStatusOut,
     DriverLogin
 )
+
+# Load GeoJSON on startup (or first request)
+load_geojson()
 
 app = FastAPI(title="IQmmute API")
 
@@ -148,6 +152,14 @@ def get_driver_assigned_route(driver_id: int, db: Session = Depends(get_db)):
         "route_code": route.route_code,
         "route_name": route.route_name
     }
+
+
+@app.get("/routes/{route_code}/geometry")
+def get_route_geometry(route_code: str):
+    geometry = find_route_geometry(route_code)
+    if not geometry:
+        raise HTTPException(status_code=404, detail="Route geometry not found")
+    return geometry
 
 
 @app.post("/driver-status", response_model=DriverStatusOut, status_code=201)
