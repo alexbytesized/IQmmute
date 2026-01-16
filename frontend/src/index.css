@@ -240,7 +240,7 @@ a.icon-btn {
   z-index: 1000;
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Align GPS button to the left */
+  align-items: flex-start;
   padding: 0;
   transition: all 0.3s ease;
 }
@@ -282,19 +282,25 @@ a.icon-btn {
 /* Desktop / Wide Screen Styles */
 @media (min-width: 768px) {
   .panel-container {
-    top: 20px; /* Distance from top of the main-content */
+    top: 20px; 
     left: 20px;
-    bottom: auto; /* Remove the bottom constraint */
-    width: 350px;
+    bottom: auto; 
+    width: auto; /* Width determined by content */
+    flex-direction: row; /* Side-by-side layout */
+    align-items: flex-start;
+    gap: 15px;
   }
 
   .location-panel {
+    width: 350px; /* Panel keeps its width */
     border-radius: 20px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.15);
   }
 
   .gps-fab {
-    margin-left: 0; /* Align with the edge of the panel on desktop */
+    margin: 0;
+    order: 2;
+    flex-shrink: 0;
   }
 }
 
