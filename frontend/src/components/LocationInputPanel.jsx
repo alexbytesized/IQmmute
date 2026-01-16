@@ -1,12 +1,19 @@
 import React from 'react';
 import { MapPin, Flag, ChevronsDown } from 'lucide-react';
 
-const LocationInputPanel = ({ originAddress, setOriginAddress, onUseCurrentLocation }) => {
+const LocationInputPanel = ({ 
+  originAddress, 
+  setOriginAddress, 
+  onUseCurrentLocation,
+  destination,
+  setDestination
+}) => {
   return (
     <div className="panel-container">
       <button 
         className="gps-fab" 
         onClick={onUseCurrentLocation}
+        aria-label="Use current location"
       >
         <MapPin size={24} />
       </button>
@@ -21,6 +28,7 @@ const LocationInputPanel = ({ originAddress, setOriginAddress, onUseCurrentLocat
             className="location-input"
             value={originAddress}
             onChange={setOriginAddress}
+            aria-label="Origin address input"
           />
           <div className="input-icon-wrapper">
             <MapPin className="input-icon-static" size={20} />
@@ -32,7 +40,14 @@ const LocationInputPanel = ({ originAddress, setOriginAddress, onUseCurrentLocat
         </div>
 
         <div className="input-group">
-          <input type="text" placeholder="Destination" className="location-input" />
+          <input 
+            type="text" 
+            placeholder="Destination" 
+            className="location-input"
+            value={destination}
+            onChange={setDestination}
+            aria-label="Destination address input"
+          />
           <div className="input-icon-wrapper">
             <Flag className="input-icon-static" size={20} />
           </div>
