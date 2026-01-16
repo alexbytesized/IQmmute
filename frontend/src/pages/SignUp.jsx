@@ -107,7 +107,7 @@ const SignUp = () => {
   return (
     <div className="container">
       <h1 className="app-title">Sign Up</h1>
-      <p>Create your IQmmute account.</p>
+      <p>Create your IQmmute Driver account.</p>
       
       <form style={{ width: '100%' }} onSubmit={handleSubmit}>
         {error && <div className="error-message">{error}</div>}
@@ -187,7 +187,7 @@ const SignUp = () => {
         </button>
       </form>
       
-      <Link to="/">
+      <Link to="/signin">
         Already have an account? Sign In
       </Link>
     </div>

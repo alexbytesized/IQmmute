@@ -65,7 +65,7 @@ const SignIn = () => {
       </div>
       
       <h1 className="app-title">IQmmute</h1>
-      <p>Commute Smarter. Commute Faster.</p>
+      <p>Sign in to your Driver Account.</p>
       
       <form onSubmit={handleSubmit} style={{ width: '100%' }}>
         {error && <div className="error-message">{error}</div>}
@@ -99,9 +99,14 @@ const SignIn = () => {
         </button>
       </form>
       
-      <Link to="/signup">
-        Don't have an account? Sign Up
-      </Link>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '1rem' }}>
+        <Link to="/signup">
+          Don't have an account? Sign Up
+        </Link>
+        <Link to="/" style={{ marginTop: '0.5rem' }}>
+          Go back to Home
+        </Link>
+      </div>
     </div>
   );
 };

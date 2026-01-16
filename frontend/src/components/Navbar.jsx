@@ -7,7 +7,7 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-left">
-        <Link to="/home">
+        <Link to="/">
           <img src={logo} alt="IQmmute Logo" className="navbar-logo" />
         </Link>
       </div>
@@ -15,9 +15,9 @@ const Navbar = () => {
         <button className="icon-btn" aria-label="Report">
           <ClipboardList color="white" size={24} />
         </button>
-        <button className="icon-btn" aria-label="User Profile">
+        <Link to="/signin" className="icon-btn" aria-label="User Profile">
           <CircleUserRound color="white" size={24} />
-        </button>
+        </Link>
       </div>
     </nav>
   );
