@@ -3,6 +3,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
+from datetime import datetime, timezone
 
 from database import get_db
 from models import Driver, Route, DriverRoute, DriverStatus
@@ -12,7 +13,8 @@ from schemas import (
     RouteOut,
     DriverRouteAssign,
     DriverStatusCreate, DriverStatusOut,
-    DriverLogin
+    DriverLogin,
+    DriverCrowdUpdate,
 )
 
 # Load GeoJSON on startup (or first request)
@@ -199,3 +201,30 @@ def latest_status(driver_id: int, db: Session = Depends(get_db)):
     if not s:
         raise HTTPException(status_code=404, detail="No status yet for this driver")
     return s
+
+@app.post("/cv/crowd")
+def update_crowd(payload: DriverCrowdUpdate, db: Session = Depends(get_db)):
+    # Ensure driver exists
+    driver = db.query(Driver).filter(Driver.id == payload.driver_id).first()
+    if not driver:
+        raise HTTPException(status_code=404, detail="Driver not found")
+
+    # Optional safety: enforce max capacity if you have it
+    if driver.max_passenger_count is not None and payload.current_passenger_count > driver.max_passenger_count:
+        raise HTTPException(
+            status_code=422,
+            detail=f"current_passenger_count exceeds max_passenger_count ({driver.max_passenger_count})"
+        )
+
+    now = datetime.now(timezone.utc)
+
+    # Insert a new status row (keeps history)
+    status = DriverStatus(
+        driver_id=payload.driver_id,
+        current_passenger_count=payload.current_passenger_count,
+        crowd_level=payload.crowd_level,
+        reported_at=now,
+    )
+    db.add(status)
+    db.commit()
+    return {"ok": True, "driver_id": payload.driver_id}

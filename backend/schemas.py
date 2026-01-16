@@ -80,3 +80,8 @@ class DriverStatusOut(BaseModel):
 
     class Config:
         from_attributes = True
+
+class DriverCrowdUpdate(BaseModel):
+    driver_id: int
+    current_passenger_count: int = Field(ge=0)
+    crowd_level: CrowdLevel
