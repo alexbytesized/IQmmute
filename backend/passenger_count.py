@@ -6,13 +6,9 @@ from collections import defaultdict, deque
 from ultralytics import YOLO
 from deep_sort_realtime.deepsort_tracker import DeepSort
 
-# -------------------------
-# CONFIG (EDIT THESE)
-# -------------------------
 BACKEND_URL = "http://127.0.0.1:8000/cv/crowd"
 DRIVER_ID = 1
 
-# Jeepney capacity definition (tune this)
 CAPACITY = 18
 
 # How often to send to backend (seconds)
@@ -23,8 +19,8 @@ CONF_THRES = 0.55
 ACTIVE_TTL_FRAMES = 15
 SMOOTH_WINDOW = 10
 
-# Optional: ignore tiny boxes to reduce false positives
-MIN_BOX_AREA = 2000  # set 0 to disable
+# Ignore tiny boxes to reduce false positives
+MIN_BOX_AREA = 2000
 
 # -------------------------
 # Helpers
