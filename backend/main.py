@@ -1,9 +1,12 @@
 import bcrypt
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
 from datetime import datetime, timezone
+import io
+from PIL import Image
+from ultralytics import YOLO
 
 from database import get_db
 from models import Driver, Route, DriverRoute, DriverStatus
@@ -19,6 +22,70 @@ from schemas import (
 
 # Load GeoJSON on startup (or first request)
 load_geojson()
+
+# Initialize YOLO model safely
+model = None
+try:
+    model = YOLO("yolov8n.pt")
+    print("✅ YOLO model loaded successfully.")
+except Exception as e:
+    print(f"❌ FAILED to load YOLO model: {e}")
+    print("   Ensure 'ultralytics' is installed and 'yolov8n.pt' exists.")
+
+def count_passengers_in_image(image_bytes: bytes) -> int:
+    """
+    Runs YOLOv8 on the image bytes and counts class 'person' (id=0).
+    """
+    if model is None:
+        print("⚠️ Model is not loaded. Returning 0.")
+        return 0
+
+    # Open image from bytes
+    try:
+        img = Image.open(io.BytesIO(image_bytes))
+    except Exception as e:
+        print(f"❌ Error opening image: {e}")
+        raise HTTPException(status_code=400, detail="Invalid image file")
+
+    # Run inference
+    try:
+        results = model(img, conf=0.4, verbose=False) 
+    except Exception as e:
+        print(f"❌ Inference failed: {e}")
+        return 0
+
+    # Check the first result (since we sent one image)
+    if not results:
+        return 0
+        
+    result = results[0]
+    
+    # Count boxes with class_id == 0 (person)
+    count = 0
+    for box in result.boxes:
+        cls_id = int(box.cls[0])
+        if cls_id == 0:  # 0 is 'person' in COCO
+            count += 1
+            
+    return count
+
+def determine_crowd_level(count: int, max_capacity: int = 18) -> str:
+    """
+    Helper to map count to spacious/crowded/full.
+    Default max_capacity is 18 (typical jeepney).
+    """
+    if max_capacity <= 0:
+        max_capacity = 18 # Fallback
+        
+    ratio = count / max_capacity
+    
+    if ratio <= 0.50:
+        return "spacious"
+    elif ratio <= 0.90:
+        return "crowded"
+    else:
+        return "full"
+
 
 app = FastAPI(title="IQmmute API")
 
@@ -50,6 +117,70 @@ def verify_password(password: str, hashed: str) -> bool:
 @app.get("/")
 def root():
     return {"status": "ok"}
+
+
+@app.post("/cv/detect")
+async def detect_passengers(
+    driver_id: int,
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db)
+):
+    """
+    Receives an image file + driver_id.
+    Runs YOLO detection -> updates DB -> returns count & level.
+    """
+    # 1. Validate driver
+    driver = db.query(Driver).filter(Driver.id == driver_id).first()
+    if not driver:
+        raise HTTPException(status_code=404, detail="Driver not found")
+
+    # 2. Read image bytes
+    content = await file.read()
+    
+    # 3. Detect
+    passenger_count = count_passengers_in_image(content)
+    
+    # 4. Determine crowd level
+    # Use driver's specific max capacity if set, else default 18
+    cap = driver.max_passenger_count if driver.max_passenger_count else 18
+    crowd_level = determine_crowd_level(passenger_count, cap)
+    
+    # 5. Update Database (DriverStatus)
+    now = datetime.now(timezone.utc)
+    
+    # We might want to know the driver's current route to log it in status
+    # Let's see if they have an active route assignment
+    # This matches the logic in 'create_driver_status' but automatically inferred
+    status_entry = DriverStatus(
+        driver_id=driver_id,
+        current_passenger_count=passenger_count,
+        crowd_level=crowd_level,
+        reported_at=now,
+    )
+    
+    # Optional: fetch active route to link this status
+    active_assignment = (
+        db.query(DriverRoute)
+        .filter(DriverRoute.driver_id == driver_id)
+        .order_by(desc(DriverRoute.assigned_at))
+        .first()
+    )
+    if active_assignment:
+        # We need the route_code from the route_id
+        route = db.query(Route).filter(Route.id == active_assignment.route_id).first()
+        if route:
+            status_entry.route_code = route.route_code
+
+    db.add(status_entry)
+    db.commit()
+    db.refresh(status_entry)
+    
+    return {
+        "driver_id": driver_id,
+        "passenger_count": passenger_count,
+        "crowd_level": crowd_level,
+        "max_capacity": cap
+    }
 
 
 @app.get("/routes", response_model=list[RouteOut])

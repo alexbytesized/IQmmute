@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import DriverNavbar from '../components/DriverNavbar';
 import MapComponent from '../components/MapComponent';
 import DriverRoutePanel from '../components/DriverRoutePanel';
+import CameraScanPanel from '../components/CameraScanPanel';
 
 const DriverHome = () => {
   const [userLocation] = useState(null);
@@ -105,6 +106,7 @@ const DriverHome = () => {
           allRoutes={allRoutes}
           onRouteSelect={handleRouteSelect}
         />
+        <CameraScanPanel />
       </main>
     </div>
   );
