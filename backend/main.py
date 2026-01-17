@@ -23,8 +23,14 @@ from schemas import (
 # Load GeoJSON on startup (or first request)
 load_geojson()
 
-# Initialize YOLO model safely
-model = None
+# Initialize YOLO model
+try:
+    print("Loading YOLOv8 model...")
+    model = YOLO("yolov8n.pt")
+    print("Model loaded successfully.")
+except Exception as e:
+    print(f"Failed to load YOLO model: {e}")
+    model = None
 
 def count_passengers_in_image(image_bytes: bytes) -> int:
     """
@@ -61,6 +67,7 @@ def count_passengers_in_image(image_bytes: bytes) -> int:
         if cls_id == 0:  # 0 is 'person' in COCO
             count += 1
             
+    print(f"🔍 Detection complete: Found {count} passengers.")
     return count
 
 def determine_crowd_level(count: int, max_capacity: int = 18) -> str:
