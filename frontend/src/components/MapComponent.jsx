@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
-// Fix for default Leaflet marker icons not showing in React
 import L from 'leaflet';
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -56,7 +55,7 @@ const MapComponent = ({ userLocation, routeGeometry }) => {
     routePositions = routeGeometry.coordinates.map(coord => [coord[1], coord[0]]);
   } else if (routeGeometry && routeGeometry.type === 'MultiLineString') {
     // Flatten MultiLineString for simplicity, or just take the first/longest segment
-    // Here we just take all segments and join them visually (though techincally separate lines)
+    // Here we just take all segments and join them visually
      routePositions = routeGeometry.coordinates.flat().map(coord => [coord[1], coord[0]]);
   }
 

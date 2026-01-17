@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
   const navigate = useNavigate();
-  
   // 1. State to hold all the user inputs
   const [formData, setFormData] = useState({
     firstName: '',

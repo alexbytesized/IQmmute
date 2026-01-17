@@ -67,7 +67,7 @@ const DriverHome = () => {
     setRouteId(route.route_code);
     setRouteName(route.route_name);
     
-    // Optimistically load geometry immediately for better UX
+    // Load geometry immediately for better UX
     fetchGeometry(route.route_code);
 
     setIsSaving(true);

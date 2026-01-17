@@ -25,12 +25,6 @@ load_geojson()
 
 # Initialize YOLO model safely
 model = None
-try:
-    model = YOLO("yolov8n.pt")
-    print("✅ YOLO model loaded successfully.")
-except Exception as e:
-    print(f"❌ FAILED to load YOLO model: {e}")
-    print("   Ensure 'ultralytics' is installed and 'yolov8n.pt' exists.")
 
 def count_passengers_in_image(image_bytes: bytes) -> int:
     """
@@ -44,14 +38,14 @@ def count_passengers_in_image(image_bytes: bytes) -> int:
     try:
         img = Image.open(io.BytesIO(image_bytes))
     except Exception as e:
-        print(f"❌ Error opening image: {e}")
+        print(f"Error opening image: {e}")
         raise HTTPException(status_code=400, detail="Invalid image file")
 
     # Run inference
     try:
         results = model(img, conf=0.4, verbose=False) 
     except Exception as e:
-        print(f"❌ Inference failed: {e}")
+        print(f"Inference failed: {e}")
         return 0
 
     # Check the first result (since we sent one image)
@@ -92,7 +86,7 @@ app = FastAPI(title="IQmmute API")
 # Allow CORS for frontend interaction
 origins = [
     "http://localhost:5173",  # Vite default port
-    "http://localhost:3000",  # React default port (just in case)
+    "http://localhost:3000",  # React default port
 ]
 
 app.add_middleware(
@@ -195,7 +189,7 @@ def get_routes(db: Session = Depends(get_db)):
 
 @app.post("/drivers", response_model=DriverOut, status_code=201)
 def create_driver(payload: DriverCreate, db: Session = Depends(get_db)):
-    # Normalize email so it’s consistent (also helps even if DB is citext)
+    # Normalize email
     email_norm = payload.email.strip().lower()
 
     # Unique checks
